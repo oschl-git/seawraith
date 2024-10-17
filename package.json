@@ -1,0 +1,38 @@
+{
+  "name": "seawraith",
+  "version": "0.0.1",
+  "description": "A simple & lightweight SFTP client in the browser",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "nodemon src/main.ts",
+    "build": "npx tsc",
+    "prod": "NODE_ENV=production node dist/main.js",
+    "eslint": "npx eslint src",
+    "prettier": "npx prettier src --write",
+    "prettier-check": "npx prettier src --check"
+  },
+  "author": "Ondřej Schlaichert",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "config": "^3.3.12",
+    "express": "^4.21.1",
+    "https": "^1.0.0",
+    "js-yaml": "^4.1.0",
+    "nunjucks": "^3.2.4",
+    "tslog": "^4.9.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@types/config": "^3.3.5",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.7.6",
+    "@types/nunjucks": "^3.2.6",
+    "eslint": "^9.12.0",
+    "eslint-config-prettier": "^9.1.0",
+    "nodemon": "^3.1.7",
+    "prettier": "^3.3.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0"
+  }
+}
