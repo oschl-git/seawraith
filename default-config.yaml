@@ -1,0 +1,15 @@
+# This is the default configuration file. The default values can be overriden by redeclaring them in 
+# .config/seawraith/config.yaml in your home directory.
+
+# HTTP configuration:
+port: 8484 # if using HTTPS, the port is ignored and 443 is used instead
+https:
+  use: false
+  keyPath:
+  certificatePath:
+
+# Force connection values:
+forceHostname: aaaa
+forceUsername:
+forcePort:
+forcePath:

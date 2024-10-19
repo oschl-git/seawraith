@@ -9,11 +9,11 @@ const PATH_COOKIE_NAME = "seawraith_path";
 const PERSISTENT_COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000; // 1 month
 
 export interface LoginData {
-  hostname: string | null;
-  username: string | null;
-  password: string | null;
-  port: number | null;
-  path: string | null;
+  hostname?: string;
+  username?: string;
+  password: string;
+  port?: number;
+  path?: string;
 }
 
 export function authenticate(req: Request, res: Response): void {
@@ -42,7 +42,12 @@ export function authenticate(req: Request, res: Response): void {
   }
 }
 
-function setCookie(res: Response, name: string, value: string, persistent = true) {
+function setCookie(
+  res: Response,
+  name: string,
+  value: string,
+  persistent = true,
+) {
   const cookieOptions: CookieOptions = {
     secure: true,
     httpOnly: true,
