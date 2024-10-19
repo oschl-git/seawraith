@@ -1,18 +1,28 @@
 import config from "config";
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import fs from "fs";
 import https from "https";
 import logger from "./utils/logger";
+import nunjucks from "nunjucks";
+import router from "./router";
 
 main();
 
 function main(): void {
   const app: Express = express();
 
-  app.get("/", (req: Request, res: Response) => {
-    res.send("hello");
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use(express.static("public"));
+  app.use(express.static("src/css"));
+  app.use(express.static("src/js"));
+
+  nunjucks.configure("src/views", {
+    autoescape: true,
+    express: app,
   });
 
+  router(app);
   listen(app);
 }
 
