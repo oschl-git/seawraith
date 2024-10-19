@@ -5,6 +5,7 @@ import logger from "./utils/logger";
 import nunjucks from "nunjucks";
 import router from "./router";
 import config from "./config";
+import cookieParser from 'cookie-parser';
 
 main();
 
@@ -12,15 +13,16 @@ function main(): void {
   const app: Express = express();
 
   app.use(express.urlencoded({ extended: true }));
-
-  app.use(express.static("public"));
-  app.use(express.static("src/css"));
-  app.use(express.static("src/js"));
+  app.use(cookieParser());
 
   nunjucks.configure("src/views", {
     autoescape: true,
     express: app,
   });
+
+  app.use(express.static("public"));
+  app.use(express.static("src/css"));
+  app.use(express.static("src/js"));
 
   router(app);
   listen(app);

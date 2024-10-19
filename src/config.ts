@@ -20,10 +20,10 @@ interface Configuration {
     keyPath: string;
     certificatePath: string;
   };
-  forceHostname?: string;
-  forceUsername?: string;
-  forcePort?: number;
-  forcePath?: string;
+  forceHostname: string;
+  forceUsername: string;
+  forcePort: number;
+  forcePath: string;
 }
 
 function loadConfiguration(): Configuration {
