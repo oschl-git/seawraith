@@ -1,4 +1,3 @@
-import config from "config";
 import express, { Express } from "express";
 import fs from "fs";
 import https from "https";
@@ -27,14 +26,18 @@ function main(): void {
 }
 
 function listen(app: Express): void {
-  const useHttps: boolean = config.get("https.use");
+  const useHttps = false;
+  // @FIXME make configurable
 
-  if (useHttps) startHttpsServer(app);
-  else startHttpServer(app);
+  // if (useHttps) startHttpsServer(app);
+  // else startHttpServer(app);
+
+  startHttpServer(app);
 }
 
 function startHttpServer(app: Express): void {
-  const port: number = config.get("port");
+  const port: number = 8484;
+  // @FIXME make configurable
 
   app.listen(port, () => {
     logger.info(`Seawraith successfully started on port ${port}! Yay!`);
@@ -45,20 +48,20 @@ function startHttpServer(app: Express): void {
   });
 }
 
-function startHttpsServer(app: Express): void {
-  const key: string = config.get("https.key");
-  const certificate: string = config.get("https.certificate");
+// function startHttpsServer(app: Express): void {
+//   const key: string = config.get("https.key");
+//   const certificate: string = config.get("https.certificate");
 
-  const server = https.createServer(
-    {
-      key: fs.readFileSync(key),
-      cert: fs.readFileSync(certificate),
-    },
-    /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
-    app,
-  );
+//   const server = https.createServer(
+//     {
+//       key: fs.readFileSync(key),
+//       cert: fs.readFileSync(certificate),
+//     },
+//     /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+//     app,
+//   );
 
-  server.listen(443, () => {
-    logger.info("Seawraith successfully started on port 443 using HTTPS. Yay!");
-  });
-}
+//   server.listen(443, () => {
+//     logger.info("Seawraith successfully started on port 443 using HTTPS. Yay!");
+//   });
+// }

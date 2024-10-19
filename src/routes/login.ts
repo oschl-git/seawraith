@@ -1,21 +1,15 @@
-import express, { Request, Response } from "express";
+import { Router, Request, Response } from "express";
+import { authenticate } from '../authenticator';
 
-const router = express.Router();
-
-interface LoginData {
-  hostname: string;
-  username: string;
-  password: string;
-}
+const router = Router();
 
 router.get("/", (req: Request, res: Response) => {
   res.render("login.njk");
 });
 
 router.post("/", (req: Request, res: Response) => {
-  const loginData = req.body as LoginData;
-  
-  res.send(loginData.username);
+  authenticate(req, res);
+  res.redirect("/files");
 });
 
 export default router;
