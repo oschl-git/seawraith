@@ -12,7 +12,6 @@ export interface SessionCookieData {
   password: string;
   port?: number;
   path?: string;
-  ip?: string;
   sessionId?: string;
 }
 
@@ -22,14 +21,12 @@ export interface SessionData {
   password: string;
   port: number;
   path: string;
-  ip: string;
   sessionId: string;
 }
 
 export function createSessionCookie(req: Request, res: Response): void {
   const sessionData = req.body as SessionCookieData;
-  sessionData.ip = req.ip;
-  sessionData.sessionId = generateSessionId();
+  sessionData.sessionId = req.ip + generateSessionId();
 
   const encryptedCookieData = encryptSessionData(sessionData);
 
@@ -83,18 +80,6 @@ function getSessionData(cookieData: SessionCookieData): SessionData {
     cookieData.path = "/";
   }
 
-  if (!cookieData.ip) {
-    throw new AuthenticationError(
-      "Could not obtain IP address during authentication",
-    );
-  }
-
-  if (!cookieData.ip) {
-    throw new AuthenticationError(
-      "Could not obtain IP address during authentication",
-    );
-  }
-
   if (!cookieData.sessionId) {
     throw new AuthenticationError(
       "Could not obtain session ID during authentication",
@@ -107,7 +92,6 @@ function getSessionData(cookieData: SessionCookieData): SessionData {
     password: cookieData.password,
     port: cookieData.port,
     path: cookieData.path,
-    ip: cookieData.ip,
     sessionId: cookieData.sessionId,
   };
 }
