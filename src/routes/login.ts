@@ -1,11 +1,13 @@
+import { authenticate, createSession } from "../authenticator";
 import { Router, Request, Response } from "express";
-import { createSession } from "../authenticator";
+import * as flashMessages from "../flash-messages";
 
 const router = Router();
 
-router.get("/", async (_req: Request, res: Response) => {
-  throw new Error("Bitch please");
-  res.render("login.njk");
+router.get("/", (req: Request, res: Response) => {
+  res.render("login.njk", {
+    flashMessages: flashMessages.getMessages(authenticate(req)),
+  });
 });
 
 router.post("/", async (req: Request, res: Response) => {

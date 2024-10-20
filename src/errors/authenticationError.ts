@@ -8,6 +8,7 @@ export default class AuthenticationError extends Error {
     flashMessage: string | undefined = undefined,
   ) {
     super(message);
+    this.name = "AuthenticationError";
     this.error = error;
     this.flashMessage = flashMessage;
   }

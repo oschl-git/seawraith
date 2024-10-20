@@ -1,6 +1,14 @@
 {% extends "abstract/base.njk" %}
 
 {% block content %}
+  <ul>
+      {% for flashMessage in flashMessages %}
+          <li class="{{ flashMessage.type }}">
+              {{ flashMessage.message }}
+          </li>
+      {% endfor %}
+  </ul>
+
   <form method="POST" action="login">
     <label for="hostname">hostname:</label>
     <input type="text" name="hostname" id="hostname">
