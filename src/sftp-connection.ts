@@ -1,5 +1,6 @@
 import SftpClient from "ssh2-sftp-client";
 import { SessionData } from "./authenticator";
+import logger from "./logger";
 
 const CLIENT_EXPIRATION_TIME = 15 * 60 * 1000; // 15 minutes
 
@@ -30,6 +31,10 @@ async function createNewClient(sessionData: SessionData): Promise<SftpClient> {
   clients[sessionData.sessionId] = newClient;
   setClientTimeout(sessionData);
 
+  logger.info(
+    `Created new client for client sessionId: ${sessionData.sessionId})`,
+  );
+
   return newClient;
 }
 
@@ -41,11 +46,18 @@ async function closeClient(sessionData: SessionData): Promise<void> {
     await client.end();
     delete clients[sessionData.sessionId];
   }
+
+  logger.info(
+    `Closed client sessionId: ${sessionData.sessionId})`,
+  );
 }
 
 function renewClient(sessionData: SessionData): void {
   deleteClientTimeout(sessionData);
   setClientTimeout(sessionData);
+  logger.info(
+    `Renewed expiration for client sessionId: ${sessionData.sessionId})`,
+  );
 }
 
 function setClientTimeout(sessionData: SessionData): void {

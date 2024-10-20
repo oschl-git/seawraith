@@ -1,14 +1,15 @@
 import { Router, Request, Response } from "express";
-import { createSessionCookie } from "../authenticator";
+import { createSession } from "../authenticator";
 
 const router = Router();
 
-router.get("/", (req: Request, res: Response) => {
+router.get("/", async (_req: Request, res: Response) => {
+  throw new Error("Bitch please");
   res.render("login.njk");
 });
 
-router.post("/", (req: Request, res: Response) => {
-  createSessionCookie(req, res);
+router.post("/", async (req: Request, res: Response) => {
+  await createSession(req, res);
   res.redirect("/files");
 });
 

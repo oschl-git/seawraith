@@ -4,12 +4,11 @@ export default class AuthenticationError extends Error {
 
   constructor(
     message: string,
-    flashMessage: string | undefined = undefined,
     error: Error | undefined = undefined,
+    flashMessage: string | undefined = undefined,
   ) {
     super(message);
-    this.name = "AuthenticationError";
-    this.flashMessage = flashMessage;
     this.error = error;
+    this.flashMessage = flashMessage;
   }
 }

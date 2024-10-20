@@ -14,8 +14,8 @@ export default function route(app: Express) {
   app.use("/login", loginRoute);
   app.use("/files", filesRoute);
 
-  app.all("*", (req: Request, res: Response) => {
-    res.redirect("/");
+  app.use((req: Request, res: Response) => {
+    res.status(404).render("error.njk", { errorCode: 404, message: "Not found" });
   });
 
   app.use(handleServerError);
@@ -38,5 +38,4 @@ function handleServerError(
     process.env.NODE_ENV === "development" ? err.message + "." : null;
 
   res.status(500).render("error.njk", { errorCode: 500, message: message });
-  next();
 }
