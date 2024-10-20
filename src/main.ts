@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import fs from "fs";
 import https from "https";
-import logger from "./utils/logger";
+import logger from "./logger";
 import nunjucks from "nunjucks";
 import router from "./router";
 import config from "./config";

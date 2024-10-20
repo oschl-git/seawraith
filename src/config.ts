@@ -2,7 +2,7 @@ import { name } from "../package.json";
 import fs from "fs";
 import os from "os";
 import path from "path";
-import yaml from "yaml";
+import YAML from "yaml";
 import InvalidConfigError from "./errors/invalidConfigError";
 
 const DEFAULT_CONFIG_PATH = path.join(process.cwd(), "default-config.yaml");
@@ -66,7 +66,7 @@ function loadConfiguration(): Configuration {
 function loadConfigFile(path: string): Configuration {
   const fileContents = fs.readFileSync(path, "utf-8");
 
-  return yaml.parse(fileContents) as Configuration;
+  return YAML.parse(fileContents) as Configuration;
 }
 
 export default loadConfiguration();

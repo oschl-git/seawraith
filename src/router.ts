@@ -1,5 +1,5 @@
 import { NextFunction, Express, Request, Response } from "express";
-import logger from "./utils/logger";
+import logger from "./logger";
 
 import filesRoute from "./routes/files";
 import loginRoute from "./routes/login";

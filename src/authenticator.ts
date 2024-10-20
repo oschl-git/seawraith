@@ -1,97 +1,114 @@
 import { Request, Response, CookieOptions } from "express";
 import config from "./config";
 import AuthenticationError from "./errors/authenticationError";
+import { encryptSessionData, decryptSessionData, generateSessionId } from "./encryption";
 
-const HOSTNAME_COOKIE_NAME = "seawraith_hostname";
-const USERNAME_COOKIE_NAME = "seawraith_username";
-const PASSWORD_COOKIE_NAME = "seawraith_password";
-const PORT_COOKIE_NAME = "seawraith_port";
-const PATH_COOKIE_NAME = "seawraith_path";
-
+const SESSION_COOKIE_NAME = "seawraith_session";
 const PERSISTENT_COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000; // 1 month
+
+export interface SessionCookieData {
+  hostname?: string;
+  username?: string;
+  password: string;
+  port?: number;
+  path?: string;
+  ip?: string;
+  sessionId?: string;
+}
 
 export interface SessionData {
   hostname: string;
   username: string;
   password: string;
   port: number;
-  path?: string;
+  path: string;
+  ip: string;
+  sessionId: string;
 }
 
-export function authenticate(req: Request, res: Response): void {
-  const sessionData = req.body as SessionData;
+export function createSessionCookie(req: Request, res: Response): void {
+  const sessionData = req.body as SessionCookieData;
+  sessionData.ip = req.ip;
+  sessionData.sessionId = generateSessionId();
 
-  if (sessionData.hostname) {
-    setCookie(res, HOSTNAME_COOKIE_NAME, sessionData.hostname);
-  }
+  const encryptedCookieData = encryptSessionData(sessionData);
 
-  if (sessionData.username) {
-    setCookie(res, USERNAME_COOKIE_NAME, sessionData.username);
-  }
-
-  if (sessionData.password) {
-    setCookie(res, PASSWORD_COOKIE_NAME, sessionData.password);
-  }
-
-  if (sessionData.port) {
-    setCookie(res, PORT_COOKIE_NAME, String(sessionData.port));
-  }
-
-  if (sessionData.path) {
-    setCookie(res, PATH_COOKIE_NAME, sessionData.path);
-  }
+  setCookie(
+    res,
+    SESSION_COOKIE_NAME,
+    encryptedCookieData,
+    req.cookies.rememberPassword === "true" ? true : false, // @FIXME This will probably not work lol
+  );
 }
 
-export function getSessionData(req: Request): SessionData {
-  let hostname: string;
-  if (config.forceHostname) {
-    hostname = config.forceHostname;
-  } else if (typeof req.cookies[HOSTNAME_COOKIE_NAME] === "string") {
-    hostname = req.cookies[HOSTNAME_COOKIE_NAME];
-  } else {
-    throw new AuthenticationError("Could not obtain hostname");
+export function authenticate(req: Request): SessionData {
+  if (typeof req.cookies[SESSION_COOKIE_NAME] !== "string") {
+    throw new AuthenticationError("Could not obtain authentication cookie");
   }
 
-  let username: string;
-  if (config.forceUsername) {
-    username = config.forceUsername;
-  } else if (typeof req.cookies[USERNAME_COOKIE_NAME] === "string") {
-    username = req.cookies[USERNAME_COOKIE_NAME];
-  } else {
-    throw new AuthenticationError("Could not obtain username");
+  const sessionData = decryptSessionData(req.cookies[SESSION_COOKIE_NAME]);
+  return getSessionData(sessionData);
+}
+
+function getSessionData(cookieData: SessionCookieData): SessionData {
+  if (!cookieData.password) {
+    throw new AuthenticationError(
+      "Could not obtain password during authentication",
+    );
   }
 
-  let password: string;
-  if (typeof req.cookies[PASSWORD_COOKIE_NAME] === "string") {
-    password = req.cookies[PASSWORD_COOKIE_NAME];
-  } else {
-    throw new AuthenticationError("Could not obtain password");
+  if (config.forceHostname) cookieData.hostname = config.forceHostname;
+  if (typeof cookieData.hostname === "undefined") {
+    throw new AuthenticationError(
+      "Could not obtain hostname during authentication",
+    );
   }
 
-  let port: number;
-  if (config.forcePort) {
-    port = config.forcePort;
-  } else if (typeof req.cookies[PORT_COOKIE_NAME] === "number") {
-    port = req.cookies[PORT_COOKIE_NAME];
-  } else {
-    throw new AuthenticationError("Could not obtain port");
+  if (config.forceUsername) cookieData.username = config.forceUsername;
+  if (!cookieData.username) {
+    throw new AuthenticationError(
+      "Could not obtain username during authentication",
+    );
   }
 
-  let path: string|undefined;
-  if (config.forcePath) {
-    path = config.forcePath;
-  } else if (typeof req.cookies[PATH_COOKIE_NAME] === "string") {
-    path = req.cookies[PATH_COOKIE_NAME];
-  } else {
-    path = undefined;
+  if (config.forcePort) cookieData.port = config.forcePort;
+  if (!cookieData.port) {
+    throw new AuthenticationError(
+      "Could not obtain port during authentication",
+    );
+  }
+
+  if (config.forcePath) cookieData.path = config.forcePath;
+  if (!cookieData.path) {
+    cookieData.path = "/";
+  }
+
+  if (!cookieData.ip) {
+    throw new AuthenticationError(
+      "Could not obtain IP address during authentication",
+    );
+  }
+
+  if (!cookieData.ip) {
+    throw new AuthenticationError(
+      "Could not obtain IP address during authentication",
+    );
+  }
+
+  if (!cookieData.sessionId) {
+    throw new AuthenticationError(
+      "Could not obtain session ID during authentication",
+    );
   }
 
   return {
-    hostname,
-    username,
-    password,
-    port,
-    path,
+    hostname: cookieData.hostname,
+    username: cookieData.username,
+    password: cookieData.password,
+    port: cookieData.port,
+    path: cookieData.path,
+    ip: cookieData.ip,
+    sessionId: cookieData.sessionId,
   };
 }
 
