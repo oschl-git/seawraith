@@ -1,12 +1,8 @@
 import { Request, Response, CookieOptions } from "express";
-import config from "./config";
+import * as encryption from "./encryption";
+import * as sftp from "./sftp-connection";
 import AuthenticationError from "./errors/authenticationError";
-import {
-  encryptSessionData,
-  decryptSessionData,
-  generateSessionId,
-} from "./encryption";
-import { getClientForSession } from "./sftp-connection";
+import config from "./config";
 
 const SESSION_COOKIE_NAME = "seawraith_session";
 const PERSISTENT_COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000; // 1 month
@@ -34,12 +30,12 @@ export async function createSession(
   res: Response,
 ): Promise<void> {
   const cookieData = req.body as SessionCookieData;
-  cookieData.sessionId = generateSessionId();
+  cookieData.sessionId = encryption.generateSessionId();
 
   const sessionData = getSessionData(cookieData, req.ip);
 
   try {
-    await getClientForSession(sessionData);
+    await sftp.getClientForSession(sessionData);
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw new AuthenticationError(
@@ -50,7 +46,7 @@ export async function createSession(
     }
   }
 
-  const encryptedCookieData = encryptSessionData(cookieData);
+  const encryptedCookieData = encryption.encryptSessionData(cookieData);
   setCookie(
     res,
     SESSION_COOKIE_NAME,
@@ -64,7 +60,9 @@ export function authenticate(req: Request): SessionData {
     throw new AuthenticationError("Could not obtain authentication cookie");
   }
 
-  const cookieData = decryptSessionData(req.cookies[SESSION_COOKIE_NAME]);
+  const cookieData = encryption.decryptSessionData(
+    req.cookies[SESSION_COOKIE_NAME],
+  );
   return getSessionData(cookieData, req.ip);
 }
 
@@ -99,7 +97,8 @@ function getSessionData(
   if (config.forcePort) cookieData.port = config.forcePort;
   if (!cookieData.port) {
     throw new AuthenticationError(
-      "Could not obtain port during authentication", undefined
+      "Could not obtain port during authentication",
+      undefined,
     );
   }
 
@@ -129,7 +128,7 @@ function setCookie(
   name: string,
   value: string,
   persistent = true,
-) {
+): void {
   const cookieOptions: CookieOptions = {
     secure: true,
     httpOnly: true,

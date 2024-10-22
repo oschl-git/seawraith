@@ -6,7 +6,7 @@ import filesRoute from "./routes/files";
 import loginRoute from "./routes/login";
 import AuthenticationError from './errors/authenticationError';
 
-export default function route(app: Express) {
+export default function route(app: Express): void {
   app.use(logRequest);
 
   app.get("/", (_req: Request, res: Response) => {
@@ -17,14 +17,14 @@ export default function route(app: Express) {
   app.use("/files", filesRoute);
 
   app.use((_req: Request, res: Response) => {
-    res.status(404).render("error.njk", { errorCode: 404, message: "Not found" });
+    return res.status(404).render("error.njk", { errorCode: 404, message: "Not found" });
   });
 
   app.use(handleAuthenticationError);
   app.use(handleServerError);
 }
 
-function logRequest(req: Request, _res: Response, next: NextFunction) {
+function logRequest(req: Request, _res: Response, next: NextFunction): void {
   logger.info(`${req.method} ${req.originalUrl} (${req.ip})`);
   next();
 }
@@ -34,7 +34,7 @@ function handleAuthenticationError(
   req: Request,
   res: Response,
   next: NextFunction,
-) {
+): void {
   if (!(err instanceof AuthenticationError)) {
     return next();
   }
@@ -50,7 +50,7 @@ function handleServerError(
   _req: Request,
   res: Response,
   _next: NextFunction,
-) {
+): void {
   logger.error(err);
 
   const message =

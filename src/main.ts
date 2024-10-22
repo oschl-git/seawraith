@@ -20,9 +20,7 @@ function main(): void {
     express: app,
   });
 
-  app.use(express.static("public"));
-  app.use(express.static("src/css"));
-  app.use(express.static("src/js"));
+  app.use(express.static("src/public"));
 
   router(app);
   listen(app);

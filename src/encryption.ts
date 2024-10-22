@@ -1,4 +1,4 @@
-import { SessionCookieData } from "./authenticator";
+import { SessionCookieData } from "./authentication";
 import * as crypto from "crypto";
 
 const SESSION_ID_LENGTH = 32;
@@ -7,7 +7,7 @@ const ALGORITHM = "aes-256-cbc";
 const SECRET_KEY = crypto.randomBytes(32);
 const IV = crypto.randomBytes(16);
 
-export function encryptSessionData(data: SessionCookieData) {
+export function encryptSessionData(data: SessionCookieData): string {
   const jsonData = JSON.stringify(data);
 	
 	const cipher = crypto.createCipheriv(ALGORITHM, SECRET_KEY, IV);

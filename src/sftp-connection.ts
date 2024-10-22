@@ -1,5 +1,5 @@
 import SftpClient from "ssh2-sftp-client";
-import { SessionData } from "./authenticator";
+import { SessionData } from "./authentication";
 import logger from "./logger";
 
 const CLIENT_EXPIRATION_TIME = 15 * 60 * 1000; // 15 minutes

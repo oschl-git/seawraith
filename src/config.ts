@@ -1,9 +1,9 @@
 import { name } from "../package.json";
 import fs from "fs";
+import InvalidConfigError from "./errors/invalidConfigError";
 import os from "os";
 import path from "path";
 import YAML from "yaml";
-import InvalidConfigError from "./errors/invalidConfigError";
 
 const DEFAULT_CONFIG_PATH = path.join(process.cwd(), "default-config.yaml");
 const USER_CONFIG_PATH = path.join(
