@@ -1,10 +1,10 @@
 import { NextFunction, Express, Request, Response } from "express";
 import * as flashMessages from "./flash-messages";
+import AuthenticationError from './errors/authenticationError';
 import logger from "./logger";
 
-import filesRoute from "./routes/files";
+import browseRoute from "./routes/browse";
 import loginRoute from "./routes/login";
-import AuthenticationError from './errors/authenticationError';
 
 export default function route(app: Express): void {
   app.use(logRequest);
@@ -14,10 +14,12 @@ export default function route(app: Express): void {
   });
 
   app.use("/login", loginRoute);
-  app.use("/files", filesRoute);
+  app.use("/browse", browseRoute);
 
   app.use((_req: Request, res: Response) => {
-    return res.status(404).render("error.njk", { errorCode: 404, message: "Not found" });
+    return res
+      .status(404)
+      .render("error.njk", { errorCode: 404, message: "Not found" });
   });
 
   app.use(handleAuthenticationError);

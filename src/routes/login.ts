@@ -12,7 +12,7 @@ router.get("/", (req: Request, res: Response): void => {
 
 router.post("/", async (req: Request, res: Response): Promise<void> => {
   await createSession(req, res);
-  res.redirect("/files");
+  res.redirect("/browse");
 });
 
 export default router;

@@ -47,22 +47,35 @@ export async function createSession(
   }
 
   const encryptedCookieData = encryption.encryptSessionData(cookieData);
-  setCookie(
+  setSessionCookie(
     res,
-    SESSION_COOKIE_NAME,
     encryptedCookieData,
-    req.cookies.rememberPassword === "true" ? true : false, // @FIXME This will probably not work lol
+    ((req.body as Record<string, unknown>)["remember-password"] ?? "off") ===
+      "on",
   );
 }
 
 export function authenticate(req: Request): SessionData {
-  if (typeof req.cookies[SESSION_COOKIE_NAME] !== "string") {
+  if (
+    !req.cookies[SESSION_COOKIE_NAME] ||
+    typeof req.cookies[SESSION_COOKIE_NAME] !== "string"
+  ) {
     throw new AuthenticationError("Could not obtain authentication cookie");
   }
 
-  const cookieData = encryption.decryptSessionData(
-    req.cookies[SESSION_COOKIE_NAME],
-  );
+  let cookieData: SessionCookieData;
+  try {
+    cookieData = encryption.decryptSessionData(
+      req.cookies[SESSION_COOKIE_NAME],
+    );
+  } catch (e) {
+    throw new AuthenticationError(
+      "Could not decrypt authentication cookie",
+      "Error while obtaining authentication data from the client",
+      e,
+    );
+  }
+
   return getSessionData(cookieData, req.ip);
 }
 
@@ -123,9 +136,8 @@ function getSessionData(
   };
 }
 
-function setCookie(
+function setSessionCookie(
   res: Response,
-  name: string,
   value: string,
   persistent = true,
 ): void {
@@ -139,5 +151,5 @@ function setCookie(
     cookieOptions.maxAge = PERSISTENT_COOKIE_MAX_AGE;
   }
 
-  res.cookie(name, value, cookieOptions);
+  res.cookie(SESSION_COOKIE_NAME, value, cookieOptions);
 }

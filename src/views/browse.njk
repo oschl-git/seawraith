@@ -1,0 +1,13 @@
+{% extends "abstract/base.njk" %}
+
+{% block content %}
+  <ul>
+      {% for flashMessage in flashMessages %}
+          <li class="{{ flashMessage.type }}">
+              {{ flashMessage.message }}
+          </li>
+      {% endfor %}
+  </ul>
+
+	<p>{{ sessionData }}</p>
+{% endblock %}
