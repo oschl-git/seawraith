@@ -5,7 +5,6 @@ import logger from "./logger";
 import filesRoute from "./routes/files";
 import loginRoute from "./routes/login";
 import AuthenticationError from './errors/authenticationError';
-import { authenticate } from './authenticator';
 
 export default function route(app: Express) {
   app.use(logRequest);
@@ -25,7 +24,7 @@ export default function route(app: Express) {
   app.use(handleServerError);
 }
 
-function logRequest(req: Request, res: Response, next: NextFunction) {
+function logRequest(req: Request, _res: Response, next: NextFunction) {
   logger.info(`${req.method} ${req.originalUrl} (${req.ip})`);
   next();
 }
@@ -37,16 +36,11 @@ function handleAuthenticationError(
   next: NextFunction,
 ) {
   if (!(err instanceof AuthenticationError)) {
-    console.log("hello hello");
-    next();
+    return next();
   }
 
   logger.info(err);
-
-  flashMessages.addMessage(
-    { message: err.message, type: flashMessages.Type.Error },
-    authenticate(req),
-  );
+  flashMessages.addMessage(flashMessages.Type.Error, err.flashMessage ?? "Authentication error.", req, res);
   
   return res.redirect("/login");
 }
@@ -62,5 +56,5 @@ function handleServerError(
   const message =
     process.env.NODE_ENV === "development" ? err.message + "." : null;
 
-  res.status(500).render("error.njk", { errorCode: 500, message: message });
+  return res.status(500).render("error.njk", { errorCode: 500, message: message });
 }

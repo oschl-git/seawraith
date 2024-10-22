@@ -1,40 +1,66 @@
-import { SessionData } from './authenticator';
+import { Request, Response, CookieOptions } from "express";
 
-const MESSAGE_EXPIRATION_TIME = 1000 * 60; // 1 minute
+const FLASH_MESSAGE_COOKIE_NAME = "seawraith_flash";
 
 export enum Type {
-	Error,
-	Warning,
-	Info,
-	Success,
+  Error,
+  Warning,
+  Info,
+  Success,
 }
 
 interface FlashMessage {
-	message: string;
-	type: Type;
+  type: Type;
+  message: string;
 }
 
-const flashMessages: Record<string, FlashMessage[]> = {};
+export function addMessage(
+  type: Type,
+  message: string,
+  req: Request,
+  res: Response,
+): void {
+  const flashMessages = getMessages(req, res);
 
-export function addMessage(flashMessage: FlashMessage, sessionData: SessionData) {
-	if (!Array.isArray(flashMessages[sessionData.sessionId])) {
-		flashMessages[sessionData.sessionId] = [];
-	}
+  flashMessages.push({
+    type: type,
+    message: message,
+  });
 
-	flashMessages[sessionData.sessionId].push(flashMessage);
-
-	setTimeout(() => {
-    void (() => {
-      flashMessages[sessionData.sessionId] = flashMessages[sessionData.sessionId].filter(
-        (storedMessage) => storedMessage.message !== flashMessage.message,
-      );
-    })();
-  }, MESSAGE_EXPIRATION_TIME);
+  setFlashMessageCookie(JSON.stringify(flashMessages), res);
 }
 
-export function getMessages(sessionData: SessionData) {
-	const messages = flashMessages[sessionData.sessionId];
-	delete flashMessages[sessionData.sessionId];
+export function getMessages(req: Request, res: Response): FlashMessage[] {
+  let flashMessages: FlashMessage[] = [];
 
-	return messages;
+  if (typeof req.cookies[FLASH_MESSAGE_COOKIE_NAME] === "string") {
+    flashMessages = JSON.parse(
+      req.cookies[FLASH_MESSAGE_COOKIE_NAME],
+    ) as FlashMessage[];
+  }
+
+  deleteFlashMessageCookie(res);
+
+  return flashMessages;
+}
+
+function setFlashMessageCookie(value: string, res: Response): void {
+  const cookieOptions: CookieOptions = {
+    secure: true,
+    httpOnly: true,
+    sameSite: "strict",
+  };
+
+  res.cookie(FLASH_MESSAGE_COOKIE_NAME, value, cookieOptions);
+}
+
+function deleteFlashMessageCookie(res: Response): void {
+  const cookieOptions: CookieOptions = {
+    secure: true,
+    httpOnly: true,
+    sameSite: "strict",
+    maxAge: 0,
+  };
+
+  res.cookie(FLASH_MESSAGE_COOKIE_NAME, "[]", cookieOptions);
 }

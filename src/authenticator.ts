@@ -44,8 +44,8 @@ export async function createSession(
     if (error instanceof Error) {
       throw new AuthenticationError(
         "Failed connecting to SFTP server",
-        error,
         "Failed connecting to SFTP server.",
+        error,
       );
     }
   }
@@ -99,7 +99,7 @@ function getSessionData(
   if (config.forcePort) cookieData.port = config.forcePort;
   if (!cookieData.port) {
     throw new AuthenticationError(
-      "Could not obtain port during authentication",
+      "Could not obtain port during authentication", undefined
     );
   }
 

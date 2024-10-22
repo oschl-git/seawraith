@@ -40,7 +40,7 @@ function loadConfiguration(): Configuration {
   };
 
   if (typeof finalConfig.port !== "number") {
-    throw new InvalidConfigError("Invalid SSL key path in configuration");
+    throw new InvalidConfigError("Invalid port in configuration");
   }
 
   if (!finalConfig.https.use) {

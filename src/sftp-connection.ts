@@ -32,7 +32,7 @@ async function createNewClient(sessionData: SessionData): Promise<SftpClient> {
   setClientTimeout(sessionData);
 
   logger.info(
-    `Created new client for client sessionId: ${sessionData.sessionId})`,
+    `Created new client for client sessionId: ${sessionData.sessionId}`,
   );
 
   return newClient;
@@ -48,7 +48,7 @@ async function closeClient(sessionData: SessionData): Promise<void> {
   }
 
   logger.info(
-    `Closed client sessionId: ${sessionData.sessionId})`,
+    `Closed client sessionId: ${sessionData.sessionId}`,
   );
 }
 
@@ -56,7 +56,7 @@ function renewClient(sessionData: SessionData): void {
   deleteClientTimeout(sessionData);
   setClientTimeout(sessionData);
   logger.info(
-    `Renewed expiration for client sessionId: ${sessionData.sessionId})`,
+    `Renewed expiration for client sessionId: ${sessionData.sessionId}`,
   );
 }
 

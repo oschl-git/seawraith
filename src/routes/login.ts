@@ -6,7 +6,7 @@ const router = Router();
 
 router.get("/", (req: Request, res: Response) => {
   res.render("login.njk", {
-    flashMessages: flashMessages.getMessages(authenticate(req)),
+    flashMessages: flashMessages.getMessages(req, res),
   });
 });
 
