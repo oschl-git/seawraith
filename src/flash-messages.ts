@@ -3,10 +3,10 @@ import { Request, Response, CookieOptions } from "express";
 const FLASH_MESSAGE_COOKIE_NAME = "seawraith_flash";
 
 export enum Type {
-  Error,
-  Warning,
-  Info,
-  Success,
+  Error = "Error",
+  Warning = "Warning",
+  Info = "Info",
+  Success = "Success",
 }
 
 interface FlashMessage {
@@ -14,29 +14,27 @@ interface FlashMessage {
   message: string;
 }
 
-export function addMessage(
+export function sendMessage(
   type: Type,
   message: string,
-  req: Request,
   res: Response,
 ): void {
-  const flashMessages = getMessages(req, res);
 
-  flashMessages.push({
+  const flashMessage: FlashMessage = {
     type: type,
     message: message,
-  });
+  };
 
-  setFlashMessageCookie(JSON.stringify(flashMessages), res);
+  setFlashMessageCookie(JSON.stringify(flashMessage), res);
 }
 
-export function getMessages(req: Request, res: Response): FlashMessage[] {
-  let flashMessages: FlashMessage[] = [];
+export function getMessage(req: Request, res: Response): FlashMessage|null {
+  let flashMessages: FlashMessage|null = null;
 
   if (typeof req.cookies[FLASH_MESSAGE_COOKIE_NAME] === "string") {
     flashMessages = JSON.parse(
       req.cookies[FLASH_MESSAGE_COOKIE_NAME],
-    ) as FlashMessage[];
+    ) as FlashMessage;
   }
 
   deleteFlashMessageCookie(res);

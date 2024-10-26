@@ -2,73 +2,35 @@
 
 {% block content %}
 
-<div class="bg-gray-100 flex items-center justify-center min-h-screen">
-  <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-    <!-- Flash Message Div -->
-    <div id="flash-message" class="h-12 mb-4 flex items-center justify-center text-center text-white font-semibold hidden rounded-md">
-      WOAH!
-    </div>
-
-    <!-- Form Title -->
-    <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">SFTP Server Login</h2>
-
-    <!-- Login Form -->
-    <form class="space-y-4" method="POST" action="/login">
-      <!-- Hostname Field -->
+<div class="bg-gray-100 dark:bg-gray-900 flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+    <form class="space-y-4" method="POST" action="login">
       <div>
-        <label for="hostname" class="block text-sm font-medium text-gray-700">Hostname</label>
-        <input type="text" id="hostname" name="hostname" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <label for="hostname" class="block text-sm font-medium text-gray-700 dark:text-gray-300">hostname</label>
+        <input type="text" id="hostname" name="hostname" required class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
       </div>
-
-      <!-- Port Field -->
       <div>
-        <label for="port" class="block text-sm font-medium text-gray-700">Port</label>
-        <input type="number" id="port" name="port" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <label for="port" class="block text-sm font-medium text-gray-700 dark:text-gray-300">port</label>
+        <input type="text" id="port" name="port" required class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
       </div>
-
-      <!-- Username Field -->
       <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">username</label>
+        <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
       </div>
-
-      <!-- Password Field -->
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">password</label>
+        <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
       </div>
-
-      <!-- Remember Password Checkbox -->
       <div class="flex items-center">
-        <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-        <label for="remember" class="ml-2 block text-sm text-gray-800">Remember password</label>
+        <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-blue-600 dark:text-blue-400 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500">
+        <label for="remember" class="ml-2 block text-sm text-gray-800 dark:text-gray-300">remember session (for one month)</label>
       </div>
-
-      <!-- Submit Button -->
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-        Login
+      {% include "partial/flash-message.njk" %}
+      <button type="submit" class="w-full bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        authenticate!
       </button>
     </form>
   </div>
-
-  <!-- JavaScript to control flash message visibility -->
-  <script>
-    // Example function to show a flash message
-    function showFlashMessage(message, type = 'error') {
-      const flashMessageDiv = document.getElementById('flash-message');
-      flashMessageDiv.classList.remove('hidden');
-      flashMessageDiv.classList.add(type === 'error' ? 'bg-red-500' : 'bg-green-500');
-      flashMessageDiv.textContent = message;
-
-      // Hide flash message after 3 seconds
-      setTimeout(() => {
-        flashMessageDiv.classList.add('hidden');
-      }, 3000);
-    }
-
-    // Example usage
-    // showFlashMessage("Invalid credentials, please try again.");
-  </script>
 </div>
 
 {% endblock %}

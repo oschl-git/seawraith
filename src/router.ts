@@ -33,7 +33,7 @@ function logRequest(req: Request, _res: Response, next: NextFunction): void {
 
 function handleAuthenticationError(
   err: Error,
-  req: Request,
+  _req: Request,
   res: Response,
   next: NextFunction,
 ): void {
@@ -42,7 +42,7 @@ function handleAuthenticationError(
   }
 
   logger.info(err);
-  flashMessages.addMessage(flashMessages.Type.Error, err.flashMessage ?? "Authentication error.", req, res);
+  flashMessages.sendMessage(flashMessages.Type.Error, err.flashMessage ?? "Authentication error.", res);
   
   return res.redirect("/login");
 }

@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", (req: Request, res: Response): void => {
   res.render("browse.njk", {
-    flashMessages: flashMessages.getMessages(req, res),
+    flashMessage: flashMessages.getMessage(req, res),
     sessionData: JSON.stringify(authenticate(req)),
   })
 });

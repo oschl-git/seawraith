@@ -1,13 +1,7 @@
 {% extends "abstract/base.njk" %}
 
 {% block content %}
-  <ul>
-      {% for flashMessage in flashMessages %}
-          <li class="{{ flashMessage.type }}">
-              {{ flashMessage.message }}
-          </li>
-      {% endfor %}
-  </ul>
+    {% include "partial/flash-message.njk" %}
 
 	<p>{{ sessionData }}</p>
 {% endblock %}

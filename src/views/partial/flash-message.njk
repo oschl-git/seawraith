@@ -1,0 +1,13 @@
+{% if flashMessage %}
+	{% if flashMessage.type === "Error" %}
+		<div id="flash-message" class="h-12 mb-4 flex items-center justify-center text-center text-white font-semibold bg-red-500 dark:bg-red-800 rounded-md">
+	{% elif flashMessage.type === "Warning" %}
+		<div id="flash-message" class="h-12 mb-4 flex items-center justify-center text-center text-white font-semibold bg-yellow-500 dark:bg-yellow-800 rounded-md">
+	{% elif flashMessage.type === "Success" %}
+		<div id="flash-message" class="h-12 mb-4 flex items-center justify-center text-center text-white font-semibold bg-green-500 dark:bg-green-800 rounded-md">
+	{% else %}
+		<div id="flash-message" class="h-12 mb-4 flex items-center justify-center text-center text-white font-semibold bg-blue-500 dark:bg-blue-800 rounded-md">
+	{% endif %}
+		<span id="flash-message-text">{{ flashMessage.message }}</span>
+	</div>
+{% endif %}
